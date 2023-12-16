@@ -8,14 +8,10 @@ PORT = 40000           # Porta que o Servidor escuta
 
 def decode_cmd_usr(cmd_usr):
     cmd_map = {
-    'jogar': 'start',
+    'iniciar' : 'start',
     'sim' : 'yes',
     'não' : 'no',
-    'nãosei' : 'idk',
     'sair':'quit',
-    'correto':'ok',
-    'incorreto':'wrong',
-    'reiniciar':'restart'
     }
     tokens = cmd_usr.split()
     if tokens[0].lower() in cmd_map:
@@ -28,31 +24,32 @@ if len(sys.argv) > 1:
     HOST = sys.argv[1]
 print('Servidor:', HOST+':'+str(PORT))
 serv = (HOST, PORT)
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect(serv)
 print('Para encerrar use SAIR, CTRL+D ou CTRL+C\n')
 
 while True:
     try:
-        cmd_usr = input('SB> ')
+        cmd_usr = input('IdentF> ')
     except:
         cmd_usr = 'SAIR'
     cmd = decode_cmd_usr(cmd_usr)
     if not cmd:
         print('Comando indefinido:', cmd_usr)
     else:
-        sock.send(str.encode(cmd))
+        sock.send(cmd.encode())
         dados = sock.recv(TAM_MSG)
         if not dados: break
         msg_status = dados.decode().split('\n')[0]
-        dados = dados[len(msg_status)+1:]
-        print(msg_status)
+        dados = dados.decode()[len(msg_status)+1:]
+        print('Dados:',dados)
+        print('MSG = ',msg_status)
         cmd = cmd.split()
         cmd[0] = cmd[0].upper()
         if cmd[0] == 'QUIT':
             break
         elif cmd[0] == 'START':
-            # CHARQUEST #
+            # IdentFind #
             ...
             
             # CODIGO DE LEONIDAS #
@@ -85,22 +82,6 @@ while True:
             #     if not dados: break
             # arq.close()
         elif cmd[0] == 'NO':
-            ...
-            # CHARQUEST #
-            
-        elif cmd[0] == 'IDK':
-            ...
-            # CHARQUEST #
-            
-        elif cmd[0] == 'OK':
-            ...
-            # CHARQUEST #
-            
-        elif cmd[0] == 'WRONG':
-            ...
-            # CHARQUEST #
-            
-        elif cmd[0] == 'RESTART':
             ...
             # CHARQUEST #
 sock.close()

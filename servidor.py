@@ -1,16 +1,25 @@
 #!/usr/bin/env python3
 import socket
 import os
+from teste2 import IdentFind
 
 TAM_MSG = 1024         # Tamanho do bloco de mensagem
 HOST = '0.0.0.0'       # IP de alguma interface do Servidor
 PORT = 40000           # Porta que o Servidor escuta
+jogo = None
 
 def processa_msg_cliente(msg, con, cliente):
     msg = msg.decode()
     print('Cliente', cliente, 'enviou', msg)
     msg = msg.split()
     if msg[0].upper() == 'START':
+        try:
+            if not jogo:
+                jogo = IdentFind()
+            jogo.iniciar()    
+        except Exception:
+            con.send(str.encode('asda')) # envia codigo de erro
+            
         # CODIGO CHARQUEST #
         ...
         
@@ -29,6 +38,7 @@ def processa_msg_cliente(msg, con, cliente):
         #     con.send(str.encode('-ERR {}\n'.format(e)))
         
     elif msg[0].upper() == 'YES':
+        con.send(str.encode('+OK\naloadasdad'))
         # CODIGO CHARQUEST #
         ...
         
@@ -47,26 +57,7 @@ def processa_msg_cliente(msg, con, cliente):
     
     elif msg[0].upper() == 'NO':
         ...
-        
-    elif msg[0].upper() == 'IDK':
-        ...
-    
-    elif msg[0].upper() == 'OK':
-        ...
-    
-    elif msg[0].upper() == 'WRONG':
-        ...
-    
-    elif msg[0].upper() == 'RESTART':
-        ...
-        
-    elif msg[0].upper() == 'QUIT':
-        # CODIGO CHARQUEST #
-        ...
-        
-        # CODIGO LEONIDAS (pode ser usando no CHARQUEST) #
-        # con.send(str.encode('+OK\n'))
-        # return False
+
     else:
         con.send(str.encode('-ERR Invalid command\n'))
     return True
@@ -88,6 +79,7 @@ sock.listen(50)
 while True:
     try:
         con, cliente = sock.accept()
+        print('aaaaaaaaaaaaaaaaaaaa')
     except: break
     processa_cliente(con, cliente)
 sock.close()
