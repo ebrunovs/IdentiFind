@@ -1,6 +1,8 @@
 import random as rd
 import os
 from pilha import Pilha
+from lista import Lista
+from hashtable import HashTable
 #HASHTABLE AQUI? OU DENTRO DO OBJETO "IDENTFIND"
 
 class IdentFind:
@@ -13,7 +15,7 @@ class IdentFind:
         #pergunta atual
         self.__pergunta_vez = None
         self.__jogo_em_andamento = False
-        self.__lista = None
+        self.__lista = Lista()
 
     def iniciar(self):
         if self.__jogo_em_andamento: 
@@ -24,13 +26,15 @@ class IdentFind:
         while len(self.__personagemUser) != 4 :  # Limitando a 4 rodadas 
             try: 
                 print("\nRodada -> ", self.__numeroRodadas())
-                gera_pergunta = self.__random_quest(self.__lista_perguntas)
-                pergunta_atual = self.__lista_perguntas[gera_pergunta]
-                self.__empilhaPergunta(pergunta_atual)
-                print(pergunta_atual)
+                # gera_pergunta = self.__random_quest(self.__lista_perguntas)
+                # pergunta_atual = self.__lista_perguntas[gera_pergunta]
+                # self.__empilhaPergunta(pergunta_atual)
+                # print(pergunta_atual)
+                print(self.__geraPergunta())
                 resposta = input("Responda 'sim' ou 'nao': ").lower()
 
                 if resposta == 'sim':
+                    return ...
                     # Acessa personagens relacionados à pergunta atual
                     # personagens_restantes = [p for p in self.__lista_personagens if p != '']
                     # self.__lista_personagens = personagens_restantes
@@ -44,6 +48,7 @@ class IdentFind:
                     #return self.__personagemUser
                     ...
                 elif resposta == 'nao':
+                    return ...
                     # Remove personagens relacionados à pergunta atual
                     # self.__lista_personagens[pergunta_atual] = ''
                     # personagens_restantes = [p for p in self.__lista_personagens if p != '']
@@ -69,25 +74,29 @@ class IdentFind:
                 break
         
     def __perguntas(self):
-        return [
-            "Seu personagem é Homem?",
-            "Seu personagem é Real?",
-            "Seu personagem é Professor?",
-            "Seu personagem é Professor do IFPB?",
-            "Seu personagem é Professor de Estrutura de Dados?",
-            "Seu personagem é Professor de Estrutura de Operacionais?",
-            "Seu personagem é Professor de Protocolos?",
-            "Seu personagem é melhor amigo do Patrick Estrela?",
-            "Seu personagem é melhor amigo do Bob Esponja?",
-            "Seu personagem faz parte de algum Desenho?",
-            "Seu personagem é Amarelo?",
-            "Seu personagem trabalha no Siri Cascudo?",
-            "Seu personagem é uma Estrela do Mar?",
-            "Seu personagem é melhor amigo do Ash?",
-            "Seu personagem é Rosa?",
-            "Seu personagem é um Pokemon?",
-        ]
-
+        self.__lista.inserir(1, "Seu personagem é Homem?")
+        self.__lista.inserir(2, "Seu personagem é Real?")
+        self.__lista.inserir(3, "Seu personagem é Professor?")
+        self.__lista.inserir(4, "Seu personagem é Professor do IFPB?")
+        self.__lista.inserir(5, "Seu personagem é Professor de Estrutura de Dados?")
+        self.__lista.inserir(6, "Seu personagem é Professor de Sistemas de Operacionais?")
+        self.__lista.inserir(7, "Seu personagem é Professor de Protocolos?")
+        self.__lista.inserir(8, "Seu personagem é melhor amigo do Patrick Estrela?")
+        self.__lista.inserir(9, "Seu personagem é melhor amigo do Bob Esponja?")
+        self.__lista.inserir(10, "Seu personagem faz parte de algum Desenho?")
+        self.__lista.inserir(11, "Seu personagem é Amarelo?")
+        self.__lista.inserir(12, "Seu personagem trabalha no Siri Cascudo?")
+        self.__lista.inserir(13, "Seu personagem é uma Estrela do Mar?")
+        self.__lista.inserir(14, "Seu personagem é melhor amigo do Ash?")
+        self.__lista.inserir(15, "Seu personagem é Rosa?")
+        self.__lista.inserir(16, "Seu personagem é um Pokemon?")
+        return self.__lista
+        
+    def __geraPergunta(self):
+        self.__perguntas()
+        #self.__lista.posicaoAleatoria()
+        return self.__lista.buscaPosicao(self.__lista.posicaoAleatoria())
+        
     def __personagens(self):
         map = {
             "Alex Sandro": ["Homem", "Real", "Professor", "IFPB", "Dados"],
@@ -163,14 +172,14 @@ class IdentFind:
         else: #$Limpa terminal no linux e outros
             os.system("clear")
             
-# def bem_vindo():
-#     print("""
-#     ==========================IdentiFind==========================
-#     ==============================================================
-#                                                 creat by: brunovs
-#     ==============================================================
-#     """ )
+def bem_vindo():
+    print("""
+    ==========================IdentiFind==========================
+    ==============================================================
+                                                creat by: brunovs
+    ==============================================================
+    """ )
 
-# bem_vindo()
-# teste = IdentFind()
-# teste.iniciar()
+bem_vindo()
+teste = IdentFind()
+teste.iniciar()

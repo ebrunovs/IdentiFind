@@ -2,6 +2,7 @@
 Classe que representa um nó na memória
 '''
 
+import random as rd
 
 class Node:
     def __init__(self,data):
@@ -124,6 +125,24 @@ class Lista:
             
         raise ValorInexistenteException(f'O valor {valor} não está armazenado na lista')
 
+    def posicaoAleatoria(self):
+        return rd.randint(1,self.__tamanho)
+    
+    def buscaPosicao(self, posicao):
+        if (self.estaVazia()):
+            raise PosicaoInvalidaException(f'Lista vazia')
+
+        cursor = self.__head
+        contador = 1
+
+        while( cursor != None ):
+            if( contador == posicao):
+                return cursor.data
+            cursor = cursor.next
+            contador += 1
+            
+        raise ValorInexistenteException(f'O valor {posicao} não está armazenado na lista')
+
     def inserir(self, posicao, valor ):
 
         try:
@@ -217,53 +236,3 @@ class Lista:
                 str += ', '
         str += ']'
         return str
-
-
- 
-       
-if __name__ == '__main__':
-
-    lst = Lista()
-    try:
-        lst.inserir(1,25)
-        print(lst)
-        lst.inserir(2,30)
-        print(lst)
-        lst.inserir(3,40)
-        print(lst)
-        lst.inserir(1,50)
-        print(lst)
-
-        # lst.remover(1)
-        # print(lst.elemento(-8))
-        #print(lst.elemento(10))
-        #print(lst.elemento('a'))
-        print(f'Função elemento(2): ',lst.elemento(2))
-        print(f'Função busca(30): ',lst.busca(30))
-        #print(f'Função busca(19): ',lst.busca(19))
-
-        valor = lst.remover(4)
-        print(f'Removendo o 4o elemento da lista: {valor}')
-        print(lst)
-        #valor = lst.remover(10)
-        #print(lst)
-
-        print('Tamanho: ',len(lst))
-
-        print('modificar()')
-        print(lst)
-        lst.modificar(3,55)
-        print(lst)
-        lst.modificar(4,55)
-    except PosicaoInvalidaException as pie:
-        print(pie)
-    except ValorInexistenteException as vie:
-        print(vie)     
-    except Exception as e:
-        print('Nossos engenheiros vao analisar esse problema')
-        print(e.__class__.__name__)
-
-
-
-
-

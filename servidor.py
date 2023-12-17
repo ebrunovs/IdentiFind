@@ -2,11 +2,12 @@
 import socket
 import os
 from teste2 import IdentFind
+from teste2 import IdentFind
 
 TAM_MSG = 1024         # Tamanho do bloco de mensagem
 HOST = '0.0.0.0'       # IP de alguma interface do Servidor
 PORT = 40000           # Porta que o Servidor escuta
-jogo = None
+jogo = IdentFind()
 
 def processa_msg_cliente(msg, con, cliente):
     msg = msg.decode()
@@ -14,8 +15,8 @@ def processa_msg_cliente(msg, con, cliente):
     msg = msg.split()
     if msg[0].upper() == 'START':
         try:
-            if not jogo:
-                jogo = IdentFind()
+        # if not jogo:
+        #     jogo = IdentFind()
             jogo.iniciar()    
         except Exception:
             con.send(str.encode('asda')) # envia codigo de erro
