@@ -1,67 +1,46 @@
-#!/usr/bin/env python3
 import socket
 import os
 from teste2 import IdentFind
-from teste2 import IdentFind
+import threading
+
 
 TAM_MSG = 1024         # Tamanho do bloco de mensagem
 HOST = '0.0.0.0'       # IP de alguma interface do Servidor
 PORT = 40000           # Porta que o Servidor escuta
-jogo = IdentFind()
+jogo = None
 
 def processa_msg_cliente(msg, con, cliente):
+    global jogo
     msg = msg.decode()
     print('Cliente', cliente, 'enviou', msg)
-    msg = msg.split()
-    if msg[0].upper() == 'START':
+
+    if jogo is not None and len(jogo.personagemUsuario()) == 4:
+        con.send(str.encode('WIN\n' + jogo.personagem_encontrado()))
+
+    if msg.upper() == 'START':
         try:
-        # if not jogo:
-        #     jogo = IdentFind()
-            jogo.iniciar()    
+            jogo = IdentFind()
+            jogo.iniciar()
+            pergunta = jogo.pergunta_atual()
+            con.send(str.encode('STARTING\n' + pergunta))
         except Exception:
-            con.send(str.encode('asda')) # envia codigo de erro
-            
-        # CODIGO CHARQUEST #
-        ...
-        
-        # CODIGO LEONIDAS #
-        # nome_arq = " ".join(msg[1:])
-        # print('Arquivo solicitado:', nome_arq)
-        # try:
-        #     status_arq = os.stat(nome_arq)
-        #     con.send(str.encode('+OK {}\n'.format(status_arq.st_size)))
-        #     arq = open(nome_arq, "rb")
-        #     while True:
-        #         dados = arq.read(TAM_MSG)
-        #         if not dados: break
-        #         con.send(dados)
-        # except Exception as e:
-        #     con.send(str.encode('-ERR {}\n'.format(e)))
-        
-    elif msg[0].upper() == 'YES':
-        con.send(str.encode('+OK\naloadasdad'))
-        # CODIGO CHARQUEST #
-        ...
-        
-        # CODIGO LEONIDAS #
-        # lista_arq = os.listdir('.')
-        # con.send(str.encode('+OK {}\n'.format(len(lista_arq))))
-        # for nome_arq in lista_arq:
-        #     if os.path.isfile(nome_arq):
-        #         status_arq = os.stat(nome_arq)
-        #         con.send(str.encode('arq: {} - {:.1f}KB\n'.format(nome_arq, status_arq.st_size/1024)))
+            con.send(str.encode('1234')) # envia codigo de erro
 
-        #     elif os.path.isdir(nome_arq):
-        #         con.send(str.encode('dir: {}\n'.format(nome_arq)))
-        #     else:
-        #         con.send(str.encode('esp: {}\n'.format(nome_arq)))
-    
-    elif msg[0].upper() == 'NO':
-        ...
+    elif msg.upper() == 'YES':
+        if jogo is not None:
+            jogo.processar_resposta('sim')
+            pergunta = jogo.pergunta_atual()
+            con.send(str.encode('RC\n' + pergunta))
 
+    elif msg.upper() == 'NO':
+        if jogo is not None:
+            jogo.processar_resposta('nao')
+            pergunta = jogo.pergunta_atual()
+            con.send(str.encode('RC\n' + pergunta))
     else:
         con.send(str.encode('-ERR Invalid command\n'))
     return True
+
 
 def processa_cliente(con, cliente):
     # IMPLEMENTAR UM MULTITHREADING PARA VARIOS CLIENTES 
@@ -71,7 +50,13 @@ def processa_cliente(con, cliente):
         if not msg or not processa_msg_cliente(msg, con, cliente): break
     con.close()
     print('Cliente desconectado', cliente)
-    
+
+def aceita_conexao(sock):
+    while True:
+        con, cliente = sock.accept()
+        thread = threading.Thread(target=processa_cliente, args=(con, cliente))
+        thread.start()
+
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serv = (HOST, PORT)
 sock.bind(serv)
@@ -80,7 +65,8 @@ sock.listen(50)
 while True:
     try:
         con, cliente = sock.accept()
-        print('aaaaaaaaaaaaaaaaaaaa')
     except: break
     processa_cliente(con, cliente)
+    
+aceita_conexao(sock) # Inicia a thread de aceitar conexoes
 sock.close()

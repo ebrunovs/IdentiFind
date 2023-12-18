@@ -144,7 +144,8 @@ class Pilha:
                 return contador
             cursor = cursor.prox
             contador += 1
-        raise PilhaException(f'A chave {key} não está presente na pilha')
+        #raise PilhaException(f'A chave {key} não está presente na pilha')
+        return 0
 
 
     def topo(self)->any:

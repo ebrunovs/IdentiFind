@@ -110,7 +110,7 @@ class Lista:
         except:
             raise      
     
-    def busca(self, valor):
+    def busca_por_valor(self, valor):
         if (self.estaVazia()):
             raise PosicaoInvalidaException(f'Lista vazia')
 
@@ -128,7 +128,7 @@ class Lista:
     def posicaoAleatoria(self):
         return rd.randint(1,self.__tamanho)
     
-    def buscaPosicao(self, posicao):
+    def busca_por_posicao(self, posicao):
         if (self.estaVazia()):
             raise PosicaoInvalidaException(f'Lista vazia')
 
@@ -188,7 +188,7 @@ class Lista:
             raise
 
 
-    def remover(self, posicao):
+    def remover_por_posicao(self, posicao):
         try:
             assert posicao > 0
 
@@ -222,7 +222,34 @@ class Lista:
             raise PosicaoInvalidaException(f'A posicao não pode ser um número negativo')
         except:
             raise       
-              
+
+    def remover_por_valor(self, valor):
+        try:
+            if( self.estaVazia() ):
+                raise PosicaoInvalidaException(f'Não é possível remover de uma lista vazia')
+
+            cursor = self.__head
+            contador = 1
+
+            while( (cursor != None) and (cursor.data != valor) ) :
+                anterior = cursor
+                cursor = cursor.next
+                contador+=1
+
+            if ( cursor == None ):
+                raise ValorInexistenteException(f'Valor {valor} não encontrado na lista')
+
+            if( contador == 1):
+                self.__head = cursor.next
+            else:
+                anterior.next = cursor.next
+
+            self.__tamanho -= 1
+            return valor
+
+        except:
+            raise
+
     def __str__(self):
 
         str = 'Lista: [ '

@@ -237,3 +237,7 @@
 #         else:
 #             print(f'O valor {valores} não está presente como valor no dicionário')
 #     break
+
+lista = [1,2,3]
+texto = 
+print(lista, '\nalgo\n')

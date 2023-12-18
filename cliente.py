@@ -6,17 +6,31 @@ TAM_MSG = 1024         # Tamanho do bloco de mensagem
 HOST = '127.0.0.1'     # IP do Servidor
 PORT = 40000           # Porta que o Servidor escuta
 
+# def decode_cmd_usr(cmd_usr):
+#     cmd_map = {
+#     'iniciar' : 'start',
+#     'sim' : 'yes',
+#     'não' : 'no',
+#     'sair':'quit',
+#     }
+#     tokens = cmd_usr.split()
+#     if tokens[0].lower() in cmd_map:
+#         tokens[0] = cmd_map[tokens[0].lower()]
+#         return " ".join(tokens)
+#     else:
+#         return False
+
 def decode_cmd_usr(cmd_usr):
     cmd_map = {
     'iniciar' : 'start',
     'sim' : 'yes',
-    'não' : 'no',
+    'nao' : 'no',
     'sair':'quit',
     }
-    tokens = cmd_usr.split()
-    if tokens[0].lower() in cmd_map:
-        tokens[0] = cmd_map[tokens[0].lower()]
-        return " ".join(tokens)
+    tokens = cmd_usr
+    if tokens.lower() in cmd_map:
+        tokens = cmd_map[tokens.lower()]
+        return tokens
     else:
         return False
 
@@ -42,46 +56,24 @@ while True:
         if not dados: break
         msg_status = dados.decode().split('\n')[0]
         dados = dados.decode()[len(msg_status)+1:]
-        print('Dados:',dados)
-        print('MSG = ',msg_status)
-        cmd = cmd.split()
-        cmd[0] = cmd[0].upper()
-        if cmd[0] == 'QUIT':
+        #print('Dados: ',dados)
+        #print('STATUS: ',msg_status)
+        #cmd = cmd.split()
+        #cmd = cmd.upper()
+        if msg_status == 'QUIT':
             break
-        elif cmd[0] == 'START':
+        elif msg_status == 'STARTING':
+            #bem_vindo()
+            print('Dados: ',dados)
             # IdentFind #
-            ...
             
-            # CODIGO DE LEONIDAS #
-            # num_arquivos = int(msg_status.split()[1])
-            # dados = dados.decode()
-            # while True:
-            #     arquivos = dados.split('\n')
-            #     residual = arquivos[-1] # último sem \n fica para próxima
-            #     for arq in arquivos[:-1]:
-            #         print(arq)
-            #         num_arquivos -= 1
-            #     if num_arquivos == 0: break
-            #     dados = sock.recv(TAM_MSG)
-            #     if not dados: break
-            #     dados = residual + dados.decode()
-        elif cmd[0] == 'YES':
+        elif msg_status == 'RC':
             # CHARQUEST #
             ...
+            print('Dados: ',dados)
             
-            # CODIGO DE LEONIDAS #
-            # nome_arq = " ".join(cmd[1:])
-            # print('Recebendo:', nome_arq)
-            # arq = open(nome_arq, "wb")
-            # tam_arquivo = int(msg_status.split()[1])
-            # while True:
-            #     arq.write(dados)
-            #     tam_arquivo -= len(dados)
-            #     if tam_arquivo == 0: break
-            #     dados = sock.recv(TAM_MSG)
-            #     if not dados: break
-            # arq.close()
-        elif cmd[0] == 'NO':
+        elif msg_status == 'WIN':
+            print('Dados: ',dados)
             ...
             # CHARQUEST #
 sock.close()
