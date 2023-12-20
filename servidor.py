@@ -8,6 +8,7 @@ import threading
 TAM_MSG = 1024
 HOST = '0.0.0.0'
 PORT = 40000
+clientes = []  # Lista de clientes conectados
 jogos = {}  # Dicionário para armazenar os jogos de cada cliente
 lock = threading.Lock()
 
@@ -15,6 +16,11 @@ def processa_msg_cliente(msg, con, cliente):
     global jogos
     msg = msg.decode()
     print('Cliente', cliente, 'enviou', msg)
+
+    if msg == '0000':  # Se o cliente enviar 'sair', desconecte-o
+        print('Cliente', cliente, 'desconectado.')
+        con.send(str.encode('1001\n'))
+        return False  # Encerra o processamento do cliente
 
     if msg == '2408':
         if cliente in jogos:
@@ -24,7 +30,7 @@ def processa_msg_cliente(msg, con, cliente):
                 jogo = IdentFind()
                 jogo.iniciar()
                 jogos[cliente] = jogo
-                print(jogos)# Associando o jogo ao cliente no dicionário
+                #print(jogos)# Associando o jogo ao cliente no dicionário
                 pergunta = jogo.pergunta_atual()
                 con.send(str.encode('2409\n' + pergunta))
             except Exception:
@@ -39,19 +45,18 @@ def processa_msg_cliente(msg, con, cliente):
                     con.send(str.encode('2905\n' + pergunta))
                 else:
                     con.send(str.encode('1111\n' + jogos[cliente].personagem_encontrado()))
+            else:
+                con.send(str.encode('4005')) # envia codigo de erro
+            
     
     else:
-        con.send(str.encode('-ERR Invalid command\n'))
-        
-    # if cliente in jogos and len(jogos[cliente].personagemUsuario()) == 4:
-    #     con.send(str.encode('1111\n' + jogos[cliente].personagem_encontrado()))
-        
+        con.send(str.encode('0001\n'))
+    
     return True
 
 
 def processa_cliente(con, cliente):
     print('Cliente conectado', cliente)
-    print(jogos)
     while True:
         try:
             msg = con.recv(TAM_MSG)
@@ -70,15 +75,28 @@ def aceita_conexoes(sock):
         except Exception:
             print('Erro ao aceitar conexão')
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-serv = (HOST, PORT)
-sock.bind(serv)
-sock.listen(50)
+try:
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    serv = (HOST, PORT)
+    sock.bind(serv)
+    sock.listen(50)
+    threading.Thread(target=aceita_conexoes, args=(sock,)).start()
+    print('Servidor', HOST+':'+str(PORT), 'conectado...')
+    aceita_conexoes(sock)
+except ConnectionError:
+    print('Erro ao iniciar Conexão')
+    sock.close()
+except OSError:
+    print('\nNão pode haver mais de um servidor em uma unica porta.\n')
+    
 
-threading.Thread(target=aceita_conexoes, args=(sock,)).start()
+#threading.Thread(target=aceita_conexoes, args=(sock,)).start()
 
-
-aceita_conexoes(sock) # Inicia a thread de aceitar conexoes
-
+# try:
+#     print('Servidor', HOST+':'+str(PORT), 'conectado...')
+#     aceita_conexoes(sock) # Inicia a thread de aceitar conexoes
+# except ConnectionError:
+#     print('Erro ao iniciar Conexão')
+#     sock.close()
 
 sock.close()

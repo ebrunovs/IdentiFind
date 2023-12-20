@@ -62,12 +62,13 @@ class IdentFind:
 
     # Processa a resposta do servidor
     def __processar_resposta(self, resposta, pergunta_atual):
-        if resposta == 'sim':
-            self.__resposta_sim(pergunta_atual)
-        elif resposta == 'nao':
-            self.__resposta_nao(pergunta_atual)
-        else:
-            print("Resposta inválida")
+        try:
+            if resposta == 'sim':
+                self.__resposta_sim(pergunta_atual)
+            elif resposta == 'nao':
+                self.__resposta_nao(pergunta_atual)
+        except ValueError:
+            return "Resposta inválida"
 
     # Trata caso a resposta seja 'sim'
     def __resposta_sim(self, pergunta_atual):
