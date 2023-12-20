@@ -1,79 +1,81 @@
-import random as rd
-import os
 from pilha import Pilha
 from lista import Lista
 from hashtable import HashTable
-#HASHTABLE AQUI? OU DENTRO DO OBJETO "IDENTFIND"
+
 
 class IdentFind:
+    
     #inicia o Objeto
     def __init__(self) -> None:
-        #quantidade de rodadas
-        self.__rodadas = 0
-        #lista de caracteristicas do personagem do usuario
-        self.__personagemUser = []
-        #pergunta atual
-        self.__pergunta_vez = None
+        self.__rodadas = 0 #quantidade de rodadas
+        self.__personagemUser = [] #lista de caracteristicas do personagem do usuario
+        self.__pergunta_vez = None #pergunta atual
         self.__jogo_em_andamento = False
         self.__lista = Lista()
+        self.__verifica_lista_perguntas = False
+        self.__caracteristicas_personagem = HashTable()
+        self.__perguntas_respondidas = Pilha()
+
 
     def iniciar(self):
+        self.__verificar_jogo_em_andamento()
+        self.__iniciar_jogo()
+        
+    def __verificar_jogo_em_andamento(self):
         if self.__jogo_em_andamento: 
             raise Exception("Jogo já iniciado")
-        self.__jogo_em_andamento = True
-            
-        self.__lista_perguntas = self.__perguntas()
-        while len(self.__personagemUser) != 4 :  # Limitando a 4 rodadas 
-            try: 
-                print("\nRodada -> ", self.__numeroRodadas())
-                # gera_pergunta = self.__random_quest(self.__lista_perguntas)
-                # pergunta_atual = self.__lista_perguntas[gera_pergunta]
-                # self.__empilhaPergunta(pergunta_atual)
-                # print(pergunta_atual)
-                print(self.__geraPergunta())
-                resposta = input("Responda 'sim' ou 'nao': ").lower()
 
-                if resposta == 'sim':
-                    return ...
-                    # Acessa personagens relacionados à pergunta atual
-                    # personagens_restantes = [p for p in self.__lista_personagens if p != '']
-                    # self.__lista_personagens = personagens_restantes
-                    quebra_perg = pergunta_atual.split()
-                    quebra_perg = quebra_perg[len(quebra_perg) - 1]
-                    self.__personagemUser.append(quebra_perg[:-1]) if quebra_perg[:-1] not in self.__personagemUser else None
-                    # REMOVER PERGUNTA QUE JA FOI RESPONDIDA SIM #
-                    
-                    print(self.__personagemUser)
-                    self.__limpaTerminal()
-                    #return self.__personagemUser
-                    ...
-                elif resposta == 'nao':
-                    return ...
-                    # Remove personagens relacionados à pergunta atual
-                    # self.__lista_personagens[pergunta_atual] = ''
-                    # personagens_restantes = [p for p in self.__lista_personagens if p != '']
-                    
-                    #se disser que nao para uma pergunta antes sim, remove do array
-                    quebra_perg = pergunta_atual.split()
-                    quebra_perg = quebra_perg[len(quebra_perg) - 1]
-                    self.__personagemUser.remove(quebra_perg[:-1]) if quebra_perg[:-1] in self.__personagemUser else None
-                    #FAZER COM QUE A PERGUNTA NAO SEJA FEITA NOVAMENTE
-                    print(self.__personagemUser)
-                    self.__limpaTerminal()
-        #REMOVER ESSE PRINT           
-                else:
-                    print("Resposta inválida")
-                    continue
-                #print("Seu personagem é:", self.__encontraPersonagem(self.__personagemUser),"\nRodadas -> ", self.__numeroRodadas())
-                    
-            except IndexError:
-                print("Acabaram as perguntas")
-                continue
-            except KeyboardInterrupt:
-                print("Programa encerrado")
-                break
+    def __iniciar_jogo(self):
+        self.__jogo_em_andamento = True
+
+    # def __jogar(self):
+    #     while len(self.__personagemUser) != 4 :  # Limitando a 4 rodadas 
+    #         try: 
+    #             input(self.pergunta_atual())
+    #         except IndexError:
+    #             print("Acabaram as perguntas")
+    #             continue
+    #         except KeyboardInterrupt:
+    #             print("Programa encerrado")
+    #             break
+    #     return self.personagem_encontrado(self.__personagemUser)
+            
+    def personagem_encontrado(self):
+        return self.__encontraPersonagem(self.__personagemUser)
+    
+    def pergunta_atual(self):
+        return self.__geraPergunta()
+
+    def processar_resposta(self, resposta):
+        self.__processar_resposta(resposta, self.__pergunta_vez)
+
+    def __processar_resposta(self, resposta, pergunta_atual):
+        if resposta == 'sim':
+            self.__resposta_sim(pergunta_atual)
+        elif resposta == 'nao':
+            self.__resposta_nao(pergunta_atual)
+        else:
+            print("Resposta inválida")
+
+    def personagemUsuario(self):
+        return self.__personagemUser
+
+    def __resposta_sim(self, pergunta_atual):
+        quebra_perg = pergunta_atual.split()
+        quebra_perg = quebra_perg[len(quebra_perg) - 1]
+        self.__personagemUser.append(quebra_perg[:-1]) if quebra_perg[:-1] not in self.__personagemUser else None
+        self.__empilhaPergunta(pergunta_atual)
+        self.__lista.remover_por_valor(pergunta_atual)
         
+
+    def __resposta_nao(self, pergunta_atual):
+        quebra_perg = pergunta_atual.split()
+        quebra_perg = quebra_perg[len(quebra_perg) - 1]
+        self.__lista.remover_por_valor(pergunta_atual)
+        
+            
     def __perguntas(self):
+        self.__verifica_lista_perguntas = True
         self.__lista.inserir(1, "Seu personagem é Homem?")
         self.__lista.inserir(2, "Seu personagem é Real?")
         self.__lista.inserir(3, "Seu personagem é Professor?")
@@ -90,67 +92,37 @@ class IdentFind:
         self.__lista.inserir(14, "Seu personagem é melhor amigo do Ash?")
         self.__lista.inserir(15, "Seu personagem é Rosa?")
         self.__lista.inserir(16, "Seu personagem é um Pokemon?")
-        return self.__lista
         
     def __geraPergunta(self):
-        self.__perguntas()
-        #self.__lista.posicaoAleatoria()
-        return self.__lista.buscaPosicao(self.__lista.posicaoAleatoria())
+        if not self.__verifica_lista_perguntas:
+            self.__perguntas()
+        self.__pergunta_vez = self.__lista.busca_por_posicao(self.__lista.posicaoAleatoria())
+        return self.__pergunta_vez
         
     def __personagens(self):
-        map = {
-            "Alex Sandro": ["Homem", "Real", "Professor", "IFPB", "Dados"],
-            "Guga Wag": ["Homem", "Real", "Professor", "IFPB", "Operacionais"],
-            "BatLeo": ["Homem", "Real", "Professor", "IFPB", "Protocolos"],
-            "Bob Esponja": ["Homem", "Desenho", "Amarelo", "Estrela", "Cascudo"],
-            "Patrick Estrela": ["Homem", "Desenho", "Rosa", "Esponja", "Mar"],
-            "Pikachu": ["Homem", "Desenho", "Amarelo", "Ash", "Pokemon"],
-            #"Homer": ["Homem", "Desenho", "Amarelo", "Pai de Bart", "Pai de Lisa", "Pai de Maggie", "Marido de Marge"],
-        }
-        return map
-
-    # def __personagens(self):
-    #     return [
-    #         "Alex Sandro", 
-    #         "Guga Wag", 
-    #         "BatLeo", 
-    #         "Elon Musk", 
-    #         "Sergio Sacani",
-    #         "Bob Esponja", 
-    #         "Patrick Estrela", 
-    #         "Pikachu",  
-    #         "Homer", 
-    #         "Picapau"
-    #         "Bella",
-    #         "Moana" , 
-    #         "Hermione Granger", 
-    #         "Fiona",
-    #         "Ellie", 
-    #         "Coraline Jones",
-    #         "Ada Lovelace",
-    #         "Marie Curie", 
-    #         "Amelia Earhart", 
-    #         "Anne Frank"
-    #     ]
-
-    def __random_quest(self, array):
-        self.__pergunta_vez = rd.randint(0, len(array) - 1)
-        return self.__pergunta_vez
+        self.__caracteristicas_personagem.put("Alex Sandro", ["Homem", "Real", "Professor", "IFPB", "Dados"])
+        self.__caracteristicas_personagem.put("Guga Wag", ["Homem", "Real", "Professor", "IFPB", "Operacionais"])
+        self.__caracteristicas_personagem.put("BatLeo", ["Homem", "Real", "Professor", "IFPB", "Protocolos"])
+        self.__caracteristicas_personagem.put("Bob Esponja", ["Homem", "Desenho", "Amarelo", "Estrela", "Cascudo"])
+        self.__caracteristicas_personagem.put("Patrick Estrela", ["Homem", "Desenho", "Rosa", "Esponja", "Mar"])
+        self.__caracteristicas_personagem.put("Pikachu", ["Homem", "Desenho", "Amarelo", "Ash", "Pokemon"])
+        self.__caracteristicas_personagem.put("Homer", ["Homem", "Desenho", "Amarelo", "Pai de Bart", "Pai de Lisa", "Pai de Maggie", "Marido de Marge"])
+        self.__caracteristicas_personagem.put("Picapau", ["Homem", "Desenho", "Amarelo", "Pássaro", "Floresta"])
+        self.__caracteristicas_personagem.put("Bella", ["Mulher", "Real", "Professora", "IFPB", "Dados"])
+        return self.__caracteristicas_personagem
     
     def __empilhaPergunta(self, pergunta):
-        pilha = Pilha()
-        pilha.empilha(pergunta)
-        
+        self.__perguntas_respondidas.empilha(pergunta)
+    
+    def rodada(self):
+        return self.__numeroRodadas()
+    
     def __numeroRodadas(self):
-        #rodadas = self.__rodadas + 1
         self.__rodadas += 1
         return self.__rodadas 
     
-    
-    
     def __encontraPersonagem(self, pUser):
-        
-        for i in range (len(pUser)):
+        for _ in range(len(pUser)):
             meus_personagens = self.__personagens()
             for chave, val in meus_personagens.items():
                 if set(pUser).issubset(set(val)):
@@ -160,26 +132,3 @@ class IdentFind:
                     personagem = "Não encontrado"
             break
         return personagem
-
-    def personagem(self):
-        return self.__personagemUser
-        #print("Seu personagem é:", self.__encontraPersonagem(self.__personagemUser),"\nRodadas -> ", self.__numeroRodadas())
-
-    def __limpaTerminal(self):
-        sistema = os.name
-        if sistema == "nt": #Limpa terminal no windows
-            os.system("cls")
-        else: #$Limpa terminal no linux e outros
-            os.system("clear")
-            
-def bem_vindo():
-    print("""
-    ==========================IdentiFind==========================
-    ==============================================================
-                                                creat by: brunovs
-    ==============================================================
-    """ )
-
-bem_vindo()
-teste = IdentFind()
-teste.iniciar()

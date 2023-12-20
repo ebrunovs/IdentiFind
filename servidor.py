@@ -1,6 +1,5 @@
 import socket
-import os
-from teste2 import IdentFind
+from identifind import IdentFind
 import threading
 
 
@@ -19,17 +18,21 @@ def processa_msg_cliente(msg, con, cliente):
         con.send(str.encode('WIN\n' + jogos[cliente].personagem_encontrado()))
 
     if msg.upper() == 'START':
-        try:
-            jogo = IdentFind()
-            jogo.iniciar()
-            jogos[cliente] = jogo  # Associando o jogo ao cliente no dicionário
-            pergunta = jogo.pergunta_atual()
-            con.send(str.encode('STARTING\n' + pergunta))
-        except Exception:
-            con.send(str.encode('1234')) # envia codigo de erro
+        if cliente in jogos:
+            del jogos[cliente]
+        if cliente not in jogos:
+            try:
+                jogo = IdentFind()
+                jogo.iniciar()
+                jogos[cliente] = jogo
+                print(jogos)# Associando o jogo ao cliente no dicionário
+                pergunta = jogo.pergunta_atual()
+                con.send(str.encode('STARTING\n' + pergunta))
+            except Exception:
+                con.send(str.encode('1234')) # envia codigo de erro
 
     elif msg.upper() == 'YES' or msg.upper() == 'NO':
-        #with lock:
+        with lock:
             if cliente in jogos and jogos[cliente] is not None:
                 jogos[cliente].processar_resposta('sim' if msg.upper() == 'YES' else 'nao')
                 pergunta = jogos[cliente].pergunta_atual()
@@ -40,19 +43,25 @@ def processa_msg_cliente(msg, con, cliente):
 
 
 def processa_cliente(con, cliente):
-    # IMPLEMENTAR UM MULTITHREADING PARA VARIOS CLIENTES 
     print('Cliente conectado', cliente)
+    print(jogos)
     while True:
-        msg = con.recv(TAM_MSG)
-        if not msg or not processa_msg_cliente(msg, con, cliente): 
+        try:
+            msg = con.recv(TAM_MSG)
+            if not msg or not processa_msg_cliente(msg, con, cliente): 
+                break
+        except ConnectionResetError:
+            print('Cliente desconectado', cliente)
             break
     con.close()
-    print('Cliente desconectado', cliente)
 
 def aceita_conexoes(sock):
     while True:
-        con, cliente = sock.accept()
-        threading.Thread(target=processa_cliente, args=(con, cliente)).start()
+        try:
+            con, cliente = sock.accept()
+            threading.Thread(target=processa_cliente, args=(con, cliente)).start()
+        except Exception:
+            print('Erro ao aceitar conexão')
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serv = (HOST, PORT)
@@ -61,20 +70,8 @@ sock.listen(50)
 
 threading.Thread(target=aceita_conexoes, args=(sock,)).start()
 
-# while True:
-#     try:
-#         con, cliente = sock.accept()
-#     except: break
-#     processa_cliente(con, cliente)
 
-# Mantém o programa principal em execução
-while True:
-    try:
-        # Qualquer outra lógica que você queira executar no programa principal
-        pass
-    except Exception as e:
-        print("Erro:", e)
-        break
+aceita_conexoes(sock) # Inicia a thread de aceitar conexoes
 
-#aceita_conexao(sock) # Inicia a thread de aceitar conexoes
+
 sock.close()

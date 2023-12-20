@@ -1,13 +1,11 @@
-import random as rd
-import os
 from pilha import Pilha
 from lista import Lista
 from hashtable import HashTable
 
 
 class IdentFind:
-    #inicia o Objeto
     
+    #inicia o Objeto
     def __init__(self) -> None:
         self.__rodadas = -1 #quantidade de rodadas
         self.__personagemUser = [] #lista de caracteristicas do personagem do usuario

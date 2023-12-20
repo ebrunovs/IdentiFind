@@ -19,6 +19,7 @@ def decode_cmd_usr(cmd_usr):
     'sim' : 'yes', #yes
     'nao' : 'no', #no
     'sair': 'quit', #quit
+    't':'teste'
     }
     tokens = cmd_usr
     if tokens.lower() in cmd_map:
@@ -71,5 +72,9 @@ while True:
             
         elif msg_status == 'WIN':
             print('Dados: ',dados)
+        elif msg_status == '1234':
+            print('Erro ao iniciar o jogo')
+        elif msg_status == '-ERR Invalid command':
+            print('Comando inválido:', cmd_usr)
             
 sock.close()
