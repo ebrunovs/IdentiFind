@@ -6,26 +6,19 @@ TAM_MSG = 1024         # Tamanho do bloco de mensagem
 HOST = '127.0.0.1'     # IP do Servidor
 PORT = 40000           # Porta que o Servidor escuta
 
-# def decode_cmd_usr(cmd_usr):
-#     cmd_map = {
-#     'iniciar' : 'start',
-#     'sim' : 'yes',
-#     'não' : 'no',
-#     'sair':'quit',
-#     }
-#     tokens = cmd_usr.split()
-#     if tokens[0].lower() in cmd_map:
-#         tokens[0] = cmd_map[tokens[0].lower()]
-#         return " ".join(tokens)
-#     else:
-#         return False
-
+# Codifica o comando do usuário para o protocolo
 def decode_cmd_usr(cmd_usr):
+    # cmd_map = {
+    # 'iniciar' : '2408', #start
+    # 'sim' : '2705', #yes
+    # 'nao' : '2805', #no
+    # 'sair': '0000', #quit
+    # }
     cmd_map = {
-    'iniciar' : 'start',
-    'sim' : 'yes',
-    'nao' : 'no',
-    'sair':'quit',
+    'iniciar' : 'start', #start
+    'sim' : 'yes', #yes
+    'nao' : 'no', #no
+    'sair': 'quit', #quit
     }
     tokens = cmd_usr
     if tokens.lower() in cmd_map:
@@ -33,6 +26,10 @@ def decode_cmd_usr(cmd_usr):
         return tokens
     else:
         return False
+
+# Decodifica o protocolo para a mensagem do usuário
+def decode_cmd_svr(protocol_svr):
+    ...
 
 if len(sys.argv) > 1:
     HOST = sys.argv[1]
@@ -54,12 +51,13 @@ while True:
         sock.send(cmd.encode())
         dados = sock.recv(TAM_MSG)
         if not dados: break
+        # protocol_svr = dados.decode().split('\n')[0]
+        # msg_status = decode_cmd_svr(protocol_svr)
+        # dados = dados.decode()[len(protocol_svr)+1:]
+        
         msg_status = dados.decode().split('\n')[0]
         dados = dados.decode()[len(msg_status)+1:]
-        #print('Dados: ',dados)
-        #print('STATUS: ',msg_status)
-        #cmd = cmd.split()
-        #cmd = cmd.upper()
+        
         if msg_status == 'QUIT':
             break
         elif msg_status == 'STARTING':
@@ -68,12 +66,10 @@ while True:
             # IdentFind #
             
         elif msg_status == 'RC':
-            # CHARQUEST #
-            ...
+            
             print('Dados: ',dados)
             
         elif msg_status == 'WIN':
             print('Dados: ',dados)
-            ...
-            # CHARQUEST #
+            
 sock.close()

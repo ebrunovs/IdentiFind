@@ -3,7 +3,7 @@ import os
 from pilha import Pilha
 from lista import Lista
 from hashtable import HashTable
-#HASHTABLE AQUI? OU DENTRO DO OBJETO "IDENTFIND"
+
 
 class IdentFind:
     #inicia o Objeto
@@ -78,7 +78,7 @@ class IdentFind:
         self.__personagemUser.append(quebra_perg[:-1]) if quebra_perg[:-1] not in self.__personagemUser else None
         self.__empilhaPergunta(pergunta_atual)
         self.__lista.remover_por_valor(pergunta_atual)
-        #print(self.__personagemUser)
+        print(self.__personagemUser)
         #self.__limpaTerminal()
 
     def __resposta_nao(self, pergunta_atual):
