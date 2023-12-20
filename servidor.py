@@ -6,7 +6,7 @@ import threading
 TAM_MSG = 1024
 HOST = '0.0.0.0'
 PORT = 40000
-clientes = []  # Lista de clientes conectados
+#clientes = []  # Lista de clientes conectados
 jogos = {}  # Dicionário para armazenar os jogos de cada cliente
 lock = threading.Lock()
 
@@ -33,7 +33,7 @@ def processa_msg_cliente(msg, con, cliente):
                 pergunta = jogo.pergunta_atual()
                 con.send(str.encode('2409\n' + pergunta))
             except Exception:
-                con.send(str.encode('1234')) # envia codigo de erro
+                con.send(str.encode('4004')) # envia codigo de erro
 
     elif msg == '2705' or msg == '2805':
         # Garante exclusão mútua no acesso ao dicionário de jogos
@@ -89,15 +89,6 @@ except ConnectionError:
     sock.close()
 except OSError:
     print('\nNão pode haver mais de um servidor em uma unica porta.\n')
-    
 
-#threading.Thread(target=aceita_conexoes, args=(sock,)).start()
-
-# try:
-#     print('Servidor', HOST+':'+str(PORT), 'conectado...')
-#     aceita_conexoes(sock) # Inicia a thread de aceitar conexoes
-# except ConnectionError:
-#     print('Erro ao iniciar Conexão')
-#     sock.close()
 
 sock.close()
