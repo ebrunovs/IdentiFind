@@ -24,9 +24,9 @@
 ## 💻 Codificação 🧑‍💻
 
 **Foram utilizadas as tecnologias:**
-***--> Python***
-***--> Threading***
-***--> Sockets***
+***<br/>--> Python***
+***<br/>--> Threading***
+***<br/>--> Sockets***
 
 ## Criadores
 

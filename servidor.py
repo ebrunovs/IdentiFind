@@ -3,6 +3,8 @@ from identifind import IdentFind
 import threading
 
 
+#SERVIDOR ESTA OK ATÉ ENTAO
+
 TAM_MSG = 1024
 HOST = '0.0.0.0'
 PORT = 40000
@@ -15,9 +17,9 @@ def processa_msg_cliente(msg, con, cliente):
     print('Cliente', cliente, 'enviou', msg)
 
     if cliente in jogos and len(jogos[cliente].personagemUsuario()) == 4:
-        con.send(str.encode('WIN\n' + jogos[cliente].personagem_encontrado()))
+        con.send(str.encode('1111\n' + jogos[cliente].personagem_encontrado()))
 
-    if msg.upper() == 'START':
+    if msg == '2408':
         if cliente in jogos:
             del jogos[cliente]
         if cliente not in jogos:
@@ -27,16 +29,16 @@ def processa_msg_cliente(msg, con, cliente):
                 jogos[cliente] = jogo
                 print(jogos)# Associando o jogo ao cliente no dicionário
                 pergunta = jogo.pergunta_atual()
-                con.send(str.encode('STARTING\n' + pergunta))
+                con.send(str.encode('2409\n' + pergunta))
             except Exception:
                 con.send(str.encode('1234')) # envia codigo de erro
 
-    elif msg.upper() == 'YES' or msg.upper() == 'NO':
+    elif msg == '2705' or msg == '2805':
         with lock:
             if cliente in jogos and jogos[cliente] is not None:
-                jogos[cliente].processar_resposta('sim' if msg.upper() == 'YES' else 'nao')
+                jogos[cliente].processar_resposta('sim' if msg == 'YES' else 'nao')
                 pergunta = jogos[cliente].pergunta_atual()
-                con.send(str.encode('RC\n' + pergunta))
+                con.send(str.encode('2905\n' + pergunta))
     else:
         con.send(str.encode('-ERR Invalid command\n'))
     return True
