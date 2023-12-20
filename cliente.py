@@ -13,7 +13,7 @@ def decode_cmd_usr(cmd_usr):
     cmd_map = {
     'iniciar' : '2408', #start
     'sim' : '2705', #yes
-    'nao' : '2705', #no
+    'nao' : '2805', #no
     'sair': '0000', #quit #Fazer ainda
     }
     tokens = cmd_usr

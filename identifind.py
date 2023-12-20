@@ -126,7 +126,7 @@ class IdentFind:
         self.__caracteristicas_personagem.put("Patrick Estrela", ["Homem", "Desenho", "Rosa", "Esponja", "Mar"])
         self.__caracteristicas_personagem.put("Pikachu", ["Homem", "Desenho", "Amarelo", "Ash", "Pokemon"])
         self.__caracteristicas_personagem.put("Pica-Pau", ["Homem", "Desenho", "Azul", "Pássaro",])
-        self.__caracteristicas_personagem.put("Bella", ["Mulher", "Real", "Professora", "IFPB", "Dados"])
+        self.__caracteristicas_personagem.put("Bella", ["Mulher", "", "", "", ""])
         return self.__caracteristicas_personagem
     
     # Busca o personagem do usuario no dicionario de personagens

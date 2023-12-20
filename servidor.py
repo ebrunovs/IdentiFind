@@ -16,9 +16,6 @@ def processa_msg_cliente(msg, con, cliente):
     msg = msg.decode()
     print('Cliente', cliente, 'enviou', msg)
 
-    if cliente in jogos and len(jogos[cliente].personagemUsuario()) == 4:
-        con.send(str.encode('1111\n' + jogos[cliente].personagem_encontrado()))
-
     if msg == '2408':
         if cliente in jogos:
             del jogos[cliente]
@@ -36,11 +33,19 @@ def processa_msg_cliente(msg, con, cliente):
     elif msg == '2705' or msg == '2805':
         with lock:
             if cliente in jogos and jogos[cliente] is not None:
-                jogos[cliente].processar_resposta('sim' if msg == 'YES' else 'nao')
-                pergunta = jogos[cliente].pergunta_atual()
-                con.send(str.encode('2905\n' + pergunta))
+                jogos[cliente].processar_resposta('sim' if msg == '2705' else 'nao')
+                if len(jogos[cliente].personagemUsuario()) != 4:
+                    pergunta = jogos[cliente].pergunta_atual()
+                    con.send(str.encode('2905\n' + pergunta))
+                else:
+                    con.send(str.encode('1111\n' + jogos[cliente].personagem_encontrado()))
+    
     else:
         con.send(str.encode('-ERR Invalid command\n'))
+        
+    # if cliente in jogos and len(jogos[cliente].personagemUsuario()) == 4:
+    #     con.send(str.encode('1111\n' + jogos[cliente].personagem_encontrado()))
+        
     return True
 
 
