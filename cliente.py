@@ -6,8 +6,6 @@ TAM_MSG = 1024         # Tamanho do bloco de mensagem
 HOST = '127.0.0.1'     # IP do Servidor
 PORT = 40000           # Porta que o Servidor escuta
 
-# IMPELEMENTAR APENAS OS PRINTS, PARA QUE TUDO FIQUE OK
-
 # Codifica o comando do usuário para o protocolo
 def decode_cmd_usr(cmd_usr):
     cmd_map = {
@@ -41,6 +39,7 @@ def decode_cmd_svr(protocol_svr):
     else:
         return False
 
+# mensgaem de boas vindas
 def bem_vindo():
     print()
     print('\033[34m=\033[0m'*50)
@@ -53,6 +52,7 @@ def bem_vindo():
     print('> Para responder as perguntas digite \033[92mSIM\033[0m ou \033[31mNAO\033[0m\n')
     
 
+# Inicia o programa e Trata a conexão com server
 try:
     if len(sys.argv) > 1:
         HOST = sys.argv[1]
@@ -65,6 +65,7 @@ except ConnectionRefusedError:
     print('\nConexão recusada pelo servidor.\n')
     sys.exit()
 
+# Trata os comandos do usuário, tanto enviados quanto recebidos
 while True:
     try:
         cmd_usr = input('\033[34mIdentF> \033[0m').upper().strip()

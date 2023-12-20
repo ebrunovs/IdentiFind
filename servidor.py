@@ -3,8 +3,6 @@ from identifind import IdentFind
 import threading
 
 
-#SERVIDOR ESTA OK ATÉ ENTAO
-
 TAM_MSG = 1024
 HOST = '0.0.0.0'
 PORT = 40000
@@ -12,6 +10,7 @@ clientes = []  # Lista de clientes conectados
 jogos = {}  # Dicionário para armazenar os jogos de cada cliente
 lock = threading.Lock()
 
+# Processa a mensagem recebida do cliente e retorna a resposta
 def processa_msg_cliente(msg, con, cliente):
     global jogos
     msg = msg.decode()
@@ -37,6 +36,7 @@ def processa_msg_cliente(msg, con, cliente):
                 con.send(str.encode('1234')) # envia codigo de erro
 
     elif msg == '2705' or msg == '2805':
+        # Garante exclusão mútua no acesso ao dicionário de jogos
         with lock:
             if cliente in jogos and jogos[cliente] is not None:
                 jogos[cliente].processar_resposta('sim' if msg == '2705' else 'nao')
@@ -51,10 +51,10 @@ def processa_msg_cliente(msg, con, cliente):
     
     else:
         con.send(str.encode('0001\n'))
-    
     return True
 
 
+# Processa o cliente conectando-o ao servidor e desconectando-o
 def processa_cliente(con, cliente):
     print('Cliente conectado', cliente)
     while True:
@@ -67,6 +67,7 @@ def processa_cliente(con, cliente):
             break
     con.close()
 
+# Aceita conexões de varios clientes via thread
 def aceita_conexoes(sock):
     while True:
         try:
