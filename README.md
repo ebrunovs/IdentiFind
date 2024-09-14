@@ -1,4 +1,4 @@
-# ☝️ PROJETÃO IDENTIFIND ❓
+#  PROJETÃO IDENTIFIND 
 
 **A proposta deste projeto é simular um jogo de perguntas e respostas que ligam os resultados a um personagem. Baseado no jogo virtual "Akinator©️".**
 
@@ -25,7 +25,7 @@
 ```"pip install numpy"``` <br/>e tudo estará pronto para começar a jogar. Caso esteja curioso sobre sua funcionalidade, numpy é uma biblioteca que suporta processamento de grandes arranjos e matrizes, possuindo também uma grande coleção de funções matemáticas para operar tais matrizes.
 5. Para dar início ao jogo, é necessário abrir dois terminais separados, digitar ".\" + nome do arquivo, tudo junto sem espaçamento, de ambos "servidor.py" e "cliente.py".
 
-## 🤔 Como Funciona 💭
+## Como Funciona 💭
 
 **Feito os passos da instalação, agora é hora de iniciar o jogo! Para começar, é necessário ativar um terminal para o servidor e um terminal para o cliente. Feito isso, serão feitas perguntas sobre um personagem que o jogador deverá pensar a respeito e responder de acordo com o perguntado, por exemplo "Seu personagem é uma esponja?" e caso responda sim, "Seu personagem é Bob Esponja!". Após responder diversas perguntas, o jogo irá tentar identificar o personagem de sua escolha.**
 
@@ -43,7 +43,7 @@
 
 **Existem vários protocolos envolvidos no funcionamento do jogo, notavelmente para o funcionamento da conexão cliente/servidor e sua comunicação, para mais detalhes, ler "protocols.md".**
 
-## 💻 Codificação 🧑‍💻
+## 💻 Codificação 
 
 **Disciplinas Envolvidas:**
 ***<br/>--> Sistemas Operacionais (Gustavo Wagner)***
